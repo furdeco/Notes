@@ -1,0 +1,167 @@
+name: Sync Live Zoho Notes Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-zoho-notes
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install workbook reader
+        run: pip install openpyxl
+
+      - name: Fetch published Zoho Sheet and create live notes-data.json
+        run: |
+          python - <<'PY'
+          import json, re, urllib.request
+          from pathlib import Path
+          from openpyxl import load_workbook
+          from io import BytesIO
+
+          url = "https://sheet.zohopublic.in/sheet/published/0ia8nb875b50555914af590ca1f18dd102b27?download=xlsx"
+          request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+          with urllib.request.urlopen(request, timeout=60) as response:
+              workbook_bytes = response.read()
+
+          workbook = load_workbook(BytesIO(workbook_bytes), read_only=True, data_only=True)
+          def norm(value):
+              return re.sub(r"[^a-z0-9]+", "", str(value or "").strip().lower())
+
+          keyword_aliases = {
+              "keyword", "keywords", "title", "name", "subject", "shortcut",
+              "searchterm", "templatekeyword", "templatename", "phrase"
+          }
+          note_aliases = {
+              "note", "notes", "template", "templatetext", "text", "content",
+              "message", "response", "script", "wording", "description", "body"
+          }
+          category_aliases = {"category", "type", "group", "section", "department", "notetype"}
+          category_map = {
+              "incoming":"incoming", "incomingcall":"incoming", "incomingcalls":"incoming",
+              "deliverycrew":"crew", "crew":"crew",
+              "outbound":"outbound", "outboundcall":"outbound", "outboundcalls":"outbound",
+              "email":"emails", "emails":"emails",
+              "chat":"chats", "chats":"chats"
+          }
+          def sheet_category(title):
+              return category_map.get(norm(title), "")
+
+          notes = []
+          for ws in workbook.worksheets:
+              rows = ws.iter_rows(values_only=True)
+              sample = []
+              for _ in range(10):
+                  try: sample.append(next(rows))
+                  except StopIteration: break
+              header_index = None
+              keyword_col = note_col = category_col = None
+              for i, row in enumerate(sample):
+                  normalized = [norm(v) for v in row]
+                  k = next((j for j,v in enumerate(normalized) if v in keyword_aliases), None)
+                  n = next((j for j,v in enumerate(normalized) if v in note_aliases), None)
+                  c = next((j for j,v in enumerate(normalized) if v in category_aliases), None)
+                  if k is not None and n is not None and k != n:
+                      header_index, keyword_col, note_col, category_col = i, k, n, c
+                      break
+
+              if header_index is None:
+                  # Support sheets with no header row: keyword in column A, note in B,
+                  # and optional category in C. A recognized sheet-tab name supplies category.
+                  data_rows = sample
+                  keyword_col, note_col, category_col = 0, 1, 2
+                  default_category = sheet_category(ws.title) or "incoming"
+              else:
+                  data_rows = sample[header_index+1:]
+                  default_category = sheet_category(ws.title) or "incoming"
+
+              def add_row(row):
+                  if not row or keyword_col is None or note_col is None:
+                      return
+                  if max(keyword_col, note_col) >= len(row):
+                      return
+                  keyword = str(row[keyword_col] or "").strip()
+                  note = str(row[note_col] or "").strip()
+                  if not keyword or not note:
+                      return
+                  raw_category = ""
+                  if category_col is not None and category_col < len(row):
+                      raw_category = norm(row[category_col])
+                  category = category_map.get(raw_category, default_category)
+                  notes.append({
+                      "id": len(notes)+1,
+                      "keyword": keyword,
+                      "note": note,
+                      "category": category
+                  })
+
+              for row in data_rows:
+                  add_row(row)
+              # Continue beyond the first 10 rows for large sheets.
+              if header_index is not None:
+                  for row in rows:
+                      add_row(row)
+              elif len(sample) == 10:
+                  for row in rows:
+                      add_row(row)
+
+          if not notes:
+              raise SystemExit(
+                  "No notes were extracted. Check the workbook's header names; expected keyword/title "
+                  "and note/template/text columns."
+              )
+
+          Path("notes-data.json").write_text(
+              json.dumps(notes, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8"
+          )
+          print(f"Exported {len(notes)} notes from {len(workbook.worksheets)} worksheet(s).")
+          PY
+
+      - name: Validate live export
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("notes-data.json")
+          if not path.exists():
+              raise SystemExit("Live export failed: notes-data.json was not created.")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          if not isinstance(data, list) or not data:
+              raise SystemExit("Live export failed: notes-data.json must contain a non-empty JSON array.")
+          required = {"keyword", "note", "category"}
+          for index, item in enumerate(data, 1):
+              if not isinstance(item, dict) or not required.issubset(item):
+                  raise SystemExit(f"Invalid record #{index}; expected keyword, note, and category.")
+              if not str(item["keyword"]).strip() or not str(item["note"]).strip():
+                  raise SystemExit(f"Empty keyword or note in record #{index}.")
+          print(f"Validated {len(data)} live Zoho records.")
+          PY
+
+      - name: Commit updated live data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes-data.json
+          if git diff --cached --quiet; then
+            echo "Zoho data is unchanged; no commit is needed."
+            exit 0
+          fi
+          git commit -m "Sync live notes from Zoho Sheet"
+          git push
