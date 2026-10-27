@@ -382,5 +382,311 @@
     "keyword": "Business partnership",
     "note": "Caller called to enquire about a business partnership. Advised them to email sarah@furdeco.co.uk with the relevant details.",
     "category": "incoming"
+  },
+  {
+    "id": 65,
+    "keyword": "Voicemail left",
+    "note": "Called the customer, but the call went to voicemail. Left a voicemail.",
+    "category": "outbound"
+  },
+  {
+    "id": 66,
+    "keyword": "No answer",
+    "note": "Called the customer, but there was no response. No voicemail was left.",
+    "category": "outbound"
+  },
+  {
+    "id": 67,
+    "keyword": "Delivery booked",
+    "note": "Called the customer and, upon their consent, booked the delivery.",
+    "category": "outbound"
+  },
+  {
+    "id": 68,
+    "keyword": "Rescheduled delivery",
+    "note": "Called the customer and, upon their consent, rescheduled the delivery.",
+    "category": "outbound"
+  },
+  {
+    "id": 69,
+    "keyword": "Customer disconnected the call",
+    "note": "Called the customer to book the delivery, but the customer disconnected the call.",
+    "category": "outbound"
+  },
+  {
+    "id": 70,
+    "keyword": "Number Removal",
+    "note": "Called to schedule the delivery but customer identified as there are unknown about the order and wanted the number to be removed.",
+    "category": "outbound"
+  },
+  {
+    "id": 71,
+    "keyword": "Opening",
+    "note": "Hi, thank you for contacting Furdeco. My name is Jack. How can I help you today?",
+    "category": "chats"
+  },
+  {
+    "id": 72,
+    "keyword": "Asking to wait",
+    "note": "Please allow me 1 to 2 minutes to check the order details.",
+    "category": "chats"
+  },
+  {
+    "id": 73,
+    "keyword": "Update on order status",
+    "note": "I understand that you would like an update on your order status. I will definitely help you with this.",
+    "category": "chats"
+  },
+  {
+    "id": 74,
+    "keyword": "Arrange delivery",
+    "note": "I understand that you would like to arrange your delivery. I will definitely help you with this.",
+    "category": "chats"
+  },
+  {
+    "id": 75,
+    "keyword": "Reschedule delivery",
+    "note": "I understand that you would like to reschedule your delivery date. I will definitely help you with this.",
+    "category": "chats"
+  },
+  {
+    "id": 76,
+    "keyword": "Rapport building",
+    "note": "While I check your order details, how has your day been so far?",
+    "category": "chats"
+  },
+  {
+    "id": 77,
+    "keyword": "Doing good too",
+    "note": "Great! I’m doing fine too, thank you for asking.",
+    "category": "chats"
+  },
+  {
+    "id": 78,
+    "keyword": "Thank you for your time and patience.",
+    "note": "Thank you for your time and patience.",
+    "category": "chats"
+  },
+  {
+    "id": 79,
+    "keyword": "Asking details",
+    "note": "Could you please confirm your full name, address, and postcode so that I can check the order for you?",
+    "category": "chats"
+  },
+  {
+    "id": 80,
+    "keyword": "Customer stopped responding",
+    "note": "If we do not hear back from you shortly, we will have to close this chat.",
+    "category": "chats"
+  },
+  {
+    "id": 81,
+    "keyword": "Customer stepped away",
+    "note": "As we haven't received a response, we'll now close this chat. If you need any further assistance, please feel free to contact us again. Thank you for contacting Furdeco.",
+    "category": "chats"
+  },
+  {
+    "id": 82,
+    "keyword": "Closing",
+    "note": "Thank you for contacting Furdeco. Take care and enjoy the rest of your day.",
+    "category": "chats"
+  },
+  {
+    "id": 83,
+    "keyword": "3 hours delivery window",
+    "note": "A 3-hour delivery time slot will be sent to you today by text message or email.",
+    "category": "chats"
+  },
+  {
+    "id": 84,
+    "keyword": "Thanks for waiting",
+    "note": "Thank you for your kind understanding.",
+    "category": "chats"
+  },
+  {
+    "id": 85,
+    "keyword": "Awaiting goods",
+    "note": "I’d genuinely love to help you with this and get everything arranged as quickly as possible. However, we haven’t received the goods from the seller yet, so unfortunately, we’re unable to arrange the delivery at this stage.",
+    "category": "chats"
+  },
+  {
+    "id": 86,
+    "keyword": "Contact seller",
+    "note": "I kindly request contacting the retailer directly, as they’ll be able to help you with this.",
+    "category": "chats"
+  },
+  {
+    "id": 87,
+    "keyword": "Items not received",
+    "note": "I’m sorry for any inconvenience caused. As soon as we receive the goods, we’ll be able to move things forward and arrange the delivery for you. I really appreciate your patience and understanding in the meantime.",
+    "category": "chats"
+  },
+  {
+    "id": 88,
+    "keyword": "Items received",
+    "note": "I’ve checked your order details, and we’ve received your goods from the retailer. You can choose Monday to Friday next week. Which day would be most convenient for you?",
+    "category": "chats"
+  },
+  {
+    "id": 89,
+    "keyword": "Still waiting for the items",
+    "note": "I’m sorry, but we haven’t received your order from the seller yet. Once it’s received, we’ll contact you to arrange a suitable delivery date.",
+    "category": "chats"
+  },
+  {
+    "id": 90,
+    "keyword": "What is your name?",
+    "note": "My name is Rahul Bharti",
+    "category": "chats"
+  },
+  {
+    "id": 91,
+    "keyword": "Fail delivery - DNR",
+    "note": "Delivery Crew called to inform that they are at the property and have tried the doorbell and contacted the customer three times, but received no response. Called the customer three times with no response. Hence, code RB5050 was shared with the crew.",
+    "category": "crew"
+  },
+  {
+    "id": 92,
+    "keyword": "Fail collection - DNR",
+    "note": "Delivery Crew called to inform that they are at the property and have tried the doorbell and contacted the customer three times, but received no response. Called the customer three times with no response. Hence, code RB5050 was shared with the crew.",
+    "category": "crew"
+  },
+  {
+    "id": 93,
+    "keyword": "Fail delivery",
+    "note": "Delivery Crew called to inform that the customer did not want the item to be delivered. Spoke with the customer, and he/she confirmed the same. Code RB4578 was provided to the Delivery Crew.",
+    "category": "crew"
+  },
+  {
+    "id": 94,
+    "keyword": "Fail collection",
+    "note": "Delivery Crew called to inform that the customer did not want the item to be collected. Spoke with the customer, and he/she confirmed the same. Code RB4578 was provided to the Delivery Crew.",
+    "category": "crew"
+  },
+  {
+    "id": 95,
+    "keyword": "Fail delivery - Not at the property",
+    "note": "Delivery Crew were at the property and received no response after ringing the doorbell and calling the customer three times. Customer confirmed they were not at the property and agreed to fail the delivery. Code RB5050 shared.",
+    "category": "crew"
+  },
+  {
+    "id": 96,
+    "keyword": "Fail collection - Not at the property",
+    "note": "Delivery Crew were at the property and received no response after ringing the doorbell and calling the customer three times. Customer confirmed they were not at the property and agreed to fail the collection. Code RB5050 shared.",
+    "category": "crew"
+  },
+  {
+    "id": 97,
+    "keyword": "Refuse unpack service",
+    "note": "Delivery Crew called to inform that the customer does not require the unpack service. Spoke with the customer and confirmed this. Code RB5050 was shared with the Delivery Crew.",
+    "category": "crew"
+  },
+  {
+    "id": 98,
+    "keyword": "Refuse assemly service",
+    "note": "Delivery Crew called to inform that the customer does not require the assembly service. Spoke with the customer and confirmed this. Code RB5050 was shared with the Delivery Crew.",
+    "category": "crew"
+  },
+  {
+    "id": 99,
+    "keyword": "Safe place delivery",
+    "note": "Delivery Crew called to confirm the customer wants the item left in a safe place. Seller instructions allow this, so code RB5050 was shared with the crew.",
+    "category": "crew"
+  },
+  {
+    "id": 100,
+    "keyword": "Damaged item",
+    "note": "Delivery Crew called to inform that the item is damaged. Spoke to the customer and advised that the item would be returned to the seller, and the customer needs to contact the seller to re-arrange the delivery. Code RB5050 shared with the crew.",
+    "category": "crew"
+  },
+  {
+    "id": 101,
+    "keyword": "Unable to locate",
+    "note": "Delivery Crew called to inform that they are unabl to locate customer's delivery address/location. Share them Google Maps location on WhatsApp ans asked to follow that.",
+    "category": "crew"
+  },
+  {
+    "id": 102,
+    "keyword": "Hallway delivery",
+    "note": "Delivery Crew called to inform that the customer wanted the item left in the hallway, although the service was Room of Choice. Spoke to the customer, who confirmed the request. Code RB5050 was shared with the crew",
+    "category": "crew"
+  },
+  {
+    "id": 103,
+    "keyword": "Access issue",
+    "note": "Delivery Crew reported an access issue preventing Room of Choice delivery and provided proof. Spoke to the customer and advised that the delivery would be failed and to contact the seller. Code RB5050 shared with the crew.",
+    "category": "crew"
+  },
+  {
+    "id": 104,
+    "keyword": "Wrong item",
+    "note": "Delivery Crew reported that the item was incorrect. Spoke to the customer and advised that it would be returned to the seller and to contact the seller for a replacement/refund. Code RB5050 shared.",
+    "category": "crew"
+  },
+  {
+    "id": 105,
+    "keyword": "Customer not responding - Delivery",
+    "note": "Delivery Crew called to inform that they were at the property and had rung the doorbell and called the customer three times but received no response. Contacted the customer, who confirmed they would arrive shortly, and relayed the update to the crew.",
+    "category": "crew"
+  },
+  {
+    "id": 106,
+    "keyword": "Customer not responding - Collection",
+    "note": "Delivery Crew called to inform that there was no response at the property for collection. Contacted the customer, who confirmed they would arrive shortly, and relayed the update to the crew.",
+    "category": "crew"
+  },
+  {
+    "id": 107,
+    "keyword": "Email to Tracey - For booking",
+    "note": "Hi Tracey\n \nThe customer would like to schedule the delivery for Day , Date Month. Please arrange the delivery accordingly. \n \nKind Regards,\nRahul Bharti",
+    "category": "emails"
+  },
+  {
+    "id": 108,
+    "keyword": "No number - Customer",
+    "note": "Good Morning,\n \nFurdeco is a 2 man delivery company and we do not have a working contact number to book in your delivery from subject seller , please call Furdeco on 0121 285 5255 or email us your best contact number, quoting your postcode and name to delivery@furdeco.co.uk\n \nKind regards\nFurdeco",
+    "category": "emails"
+  },
+  {
+    "id": 109,
+    "keyword": "No number - Seller",
+    "note": "Good Morning,\n  \nI would like to request you to kindly provide us with a contact number for the above order number as no contact is provided.\nYour quick response in this matter will be greatly appreciated.\n \nKind Regards\n \nFurdeco",
+    "category": "emails"
+  },
+  {
+    "id": 110,
+    "keyword": "Wrong number",
+    "note": "Hi,\n \nI would like to request you to kindly provide us with an alternative contact for the above order number as the given contact is wrong number . Your quick response in this matter will be greatly appreciated.\n \nKind Regards\n \nFurdeco",
+    "category": "emails"
+  },
+  {
+    "id": 111,
+    "keyword": "Number belongs to someone else",
+    "note": "Hi,\n \nI would like to request you to kindly provide us with an alternative contact for the above order number as the given contact belongs to someone else . Your quick response in this matter will be greatly appreciated.\n \nKind Regards\n \nFurdeco",
+    "category": "emails"
+  },
+  {
+    "id": 112,
+    "keyword": "For no answer",
+    "note": "Hi,\n \nI would like to request you to kindly provide us with an alternative contact for the above order number as the given seems incorrect . Your quick response in this matter will be greatly appreciated.\n \nKind Regards\n \nFurdeco",
+    "category": "emails"
+  },
+  {
+    "id": 113,
+    "keyword": "Incomplete",
+    "note": "Hi,\n \nI would like to request you to kindly provide us with an alternative contact for the above order number as the given is incomplete . Your quick response in this matter will be greatly appreciated.\n \nKind Regards\n \nFurdeco",
+    "category": "emails"
+  },
+  {
+    "id": 114,
+    "keyword": "Not getting connected",
+    "note": "Hi,\n \nI would like to request you to kindly provide us with an alternative contact for the above order number isn't getting connected . Your quick response in this matter will be greatly appreciated.\n \nKind Regards\n \nFurdeco",
+    "category": "emails"
+  },
+  {
+    "id": 115,
+    "keyword": "Collection from warehouse",
+    "note": "Dear Warehouse Team,\n\nThe customer will collect the item from [Warehouse Name] and is expected to arrive around [Time] with the consignment number and one valid government-issued ID proof.\n\nPlease ensure the item is ready for collection.\n\nKind Regards,\nFurdeco",
+    "category": "emails"
   }
 ]
