@@ -1,0 +1,127 @@
+name: Sync Live Zoho Notes Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-zoho-notes
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install workbook reader
+        run: pip install openpyxl
+
+      - name: Download each Zoho sheet and build categorized notes
+        run: |
+          python - <<'PY'
+          import json, re, urllib.request
+          from io import BytesIO
+          from pathlib import Path
+          from openpyxl import load_workbook
+
+          SOURCES = [
+              ("incoming", "https://sheet.zohopublic.in/sheet/published/0ia8nb875b50555914af590ca1f18dd102b27?download=xlsx"),
+              ("outbound", "https://sheet.zohopublic.in/sheet/published/wvwu0cc622fc553ee4dfe8b38e5372af1a69f?download=xlsx"),
+              ("chats", "https://sheet.zohopublic.in/sheet/published/wvwu001552bea38254f0c88fd5d659889f466?download=xlsx"),
+              ("crew", "https://sheet.zohopublic.in/sheet/published/wvwu007348e5a42c0411bacebcc8c99b69732?download=xlsx"),
+              ("emails", "https://sheet.zohopublic.in/sheet/published/wvwu0f0e6551c03e046358f178d6064d77cb9?download=xlsx"),
+          ]
+
+          def norm(value):
+              return re.sub(r"[^a-z0-9]+", "", str(value or "").strip().lower())
+
+          notes = []
+          seen = set()
+          for category, url in SOURCES:
+              print(f"Downloading {category} sheet...")
+              request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  workbook_bytes = response.read()
+              workbook = load_workbook(BytesIO(workbook_bytes), read_only=True, data_only=True)
+              source_count = 0
+              for ws in workbook.worksheets:
+                  for row in ws.iter_rows(values_only=True):
+                      values = list(row or ())
+                      if len(values) < 2:
+                          continue
+                      keyword_raw = values[0]
+                      note_raw = values[1]
+                      keyword = str(keyword_raw or "").strip()
+                      note = str(note_raw or "").strip()
+                      first_norm, second_norm = norm(keyword), norm(note)
+                      # Skip category/header rows such as "Delivery Crew Calls - Keywords | Notes".
+                      if ("keyword" in first_norm or first_norm in {"keywords", "title", "name"}) and second_norm in {"note", "notes", "template", "text", "content"}:
+                          continue
+                      if not keyword or not note:
+                          continue
+                      # Avoid accidentally importing repeated header rows or duplicate rows.
+                      if first_norm in {"keywords", "keyword", "incomingcallkeywords", "deliverycrewcallkeywords", "outboundcallkeywords", "emailkeywords", "chatkeywords"}:
+                          continue
+                      key = (category, keyword.casefold(), note.casefold())
+                      if key in seen:
+                          continue
+                      seen.add(key)
+                      notes.append({"id": len(notes) + 1, "keyword": keyword, "note": note, "category": category})
+                      source_count += 1
+              workbook.close()
+              print(f"Imported {source_count} notes for category {category}.")
+
+          if not notes:
+              raise SystemExit("No notes were extracted from the five Zoho workbooks. Check published links and that data is in columns A and B.")
+
+          Path("notes-data.json").write_text(json.dumps(notes, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          counts = {name: sum(1 for row in notes if row["category"] == name) for name in ("incoming", "crew", "outbound", "emails", "chats")}
+          print(f"Exported {len(notes)} notes. Category counts: {counts}")
+          PY
+
+      - name: Validate live export and category mapping
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("notes-data.json").read_text(encoding="utf-8"))
+          if not isinstance(data, list) or not data:
+              raise SystemExit("notes-data.json must contain a non-empty JSON array.")
+          required = {"id", "keyword", "note", "category"}
+          allowed = {"incoming", "crew", "outbound", "emails", "chats"}
+          for i, item in enumerate(data, 1):
+              if not isinstance(item, dict) or not required.issubset(item):
+                  raise SystemExit(f"Invalid record #{i}; expected id, keyword, note, category.")
+              if item["category"] not in allowed:
+                  raise SystemExit(f"Invalid category in record #{i}: {item['category']}")
+              if not str(item["keyword"]).strip() or not str(item["note"]).strip():
+                  raise SystemExit(f"Empty keyword or note in record #{i}.")
+          print(f"Validated {len(data)} records.")
+          PY
+
+      - name: Commit updated live data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes-data.json
+          if git diff --cached --quiet; then
+            echo "Zoho data is unchanged; no commit is needed."
+            exit 0
+          fi
+          git commit -m "Sync live notes from Zoho Sheets"
+          # Reconcile concurrent commits (for example, an index.html upload)
+          # before pushing the generated data file.
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
