@@ -409,8 +409,8 @@
   },
   {
     "id": 69,
-    "keyword": "Delivery booked",
-    "note": "Called the customer and, upon their consent, booked the delivery.",
+    "keyword": "Delivery scheduled",
+    "note": "Called the customer and, upon their consent, scheduled the delivery.",
     "category": "outbound"
   },
   {
